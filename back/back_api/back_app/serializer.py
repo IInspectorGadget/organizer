@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Organizer
 
 class OrganizerSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
+    id = serializers.IntegerField(read_only=True)
     date_start = serializers.DateTimeField()
     data_end = serializers.DateTimeField()
     title = serializers.CharField(max_length = 120)
