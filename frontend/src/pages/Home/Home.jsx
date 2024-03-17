@@ -1,18 +1,23 @@
 import { Route, Routes } from "react-router-dom";
-import { Layout } from "antd";
+import {  Flex, Layout } from "antd";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { Content, Header } from "antd/es/layout/layout";
+import { Content} from "antd/es/layout/layout";
 import MyForm from "@components/MyForm"
+import MyCalendar from "@src/components/MyCalendar";
 const queryClient = new QueryClient();
 
 
 const Home = () => {
+
     return (
     <QueryClientProvider client={queryClient}>
         <Layout>
             {/* <Header></Header> */}
             <Content className='content'>
-                <MyForm></MyForm>
+                <Flex vertical>
+                    <MyForm/>
+                    <MyCalendar/>
+                </Flex>
             </Content>
         </Layout>
         <Routes>

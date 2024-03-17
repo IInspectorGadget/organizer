@@ -11,11 +11,11 @@ from .serializer import OrganizerSerializer
 
 class GetAllTasksView(APIView):
     def get(self, request):
-        if(request.data.get("date_start") == "all" or request.data.get("date_start") is None):
+        if(request.GET.get("date_start") == "all" or request.GET.get("date_start") is None):
             lst = Organizer.objects.all()
             return Response({"tasks":OrganizerSerializer(lst, many=True).data})
-        lst = (Organizer.objects.filter(date_start__gte = request.data.get("date_start")) 
-        & Organizer.objects.filter(data_end__lte = request.data.get("data_end")))
+        lst = (Organizer.objects.filter(date_start__gte = request.GET.get("date_start")) 
+        & Organizer.objects.filter(data_end__lte = request.GET.get("data_end")))
         return Response({"tasks":OrganizerSerializer(lst, many=True).data})
     
 
