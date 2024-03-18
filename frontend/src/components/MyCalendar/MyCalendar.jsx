@@ -1,4 +1,4 @@
-import { Calendar } from "antd";
+import { Calendar, Flex, Popover, Typography } from "antd";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { useQuery } from "react-query";
@@ -44,11 +44,16 @@ const MyCalendar = () => {
         const startDate = dayjs(task.date_start);
         const endDate = dayjs(task.date_end);
         const days = getDaysBetweenDates(startDate, endDate);
-        days.forEach(date => {
+        days.forEach((date, index) => {
+          const isStartDate = index === 0;
+          const isEndDate = index === days.length - 1;
+          const startTime = isStartDate ? `Начало: ${startDate.format('HH:mm')}` : '';
+          const endTime = isEndDate ? `Окончание: ${endDate.format('HH:mm')}` : '';
+          const taskWithTime = { ...task, startTime, endTime };
           if (!acc[date]) {
             acc[date] = [];
           }
-          acc[date].push(task);
+          acc[date].push(taskWithTime);
         });
         return acc;
       }, {}) : [];
@@ -64,7 +69,16 @@ const MyCalendar = () => {
         return (
             <ul>
                 {tasksForDate.map(task => (
-                    <li key={task.id}>{task.id}</li>
+                  <li key={task.id}> 
+                     <Popover content={task.description} title="Title">
+                      <Flex vertical>
+                        <Typography.Text type="warning">{task.title}</Typography.Text>
+                        {task.startTime && <Typography.Text type="success">{task.startTime}</Typography.Text>}
+                        {task.endTime && <Typography.Text type="danger">{task.endTime}</Typography.Text>}
+                        {!task.endTime && !task.startTime && <Typography.Text type="secondary">весь день</Typography.Text>}
+                      </Flex>
+                    </Popover>
+                       </li>
                 ))}
             </ul>
         )

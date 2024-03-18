@@ -37,7 +37,7 @@ const MyForm = () => {
 
 
     return (
-    <Form style={{ maxWidth: 600 }} onFinish={(values) => handlerFinish(values)}>
+    <Form style={{ maxWidth: 600, margin: "10px" }} onFinish={(values) => handlerFinish(values)}>
     <Form.Item
       label="Название события"
       name="title"
@@ -66,7 +66,7 @@ const MyForm = () => {
         />
     </Form.Item>
 
-    <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
+    <Form.Item>
       <Button type="primary" htmlType="submit">
         Создать
       </Button>
