@@ -16,6 +16,7 @@ class OrganizerSerializer(serializers.Serializer):
         instance.date_start = validated_data.get('date_start', instance.date_start)
         instance.data_end = validated_data.get('data_end', instance.data_end)
         instance.description = validated_data.get('description', instance.description)
+        print(instance)
         instance.save()
         return instance
 

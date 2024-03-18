@@ -1,10 +1,11 @@
-import { Calendar, Flex, Popover, Typography } from "antd";
+import { Calendar, Flex, Modal, Popover, Typography } from "antd";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
 import IsSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+import MyForm from "../MyForm";
 dayjs.extend(IsSameOrBefore)
 dayjs.extend(isBetween)
 
@@ -12,6 +13,23 @@ const MyCalendar = () => {
     const currentDate = dayjs()
     const startOfMonth = currentDate.startOf('month')
     const endOfMonth = currentDate.endOf('month')
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [task, setTask] = useState(null);
+
+    const showModal = useCallback((task) => {
+      setTask(task);
+      setIsModalOpen(true);
+    },[setTask, setIsModalOpen]);
+
+    const handleOk = () => {
+      setIsModalOpen(false);
+    };
+
+    const handleCancel = () => {
+      setIsModalOpen(false);
+    };
+
 
     const getDates = useCallback(async () => {
         try {
@@ -42,7 +60,7 @@ const MyCalendar = () => {
     
     const taskEvents = !isLoading ? data.tasks.reduce((acc, task) => {
         const startDate = dayjs(task.date_start);
-        const endDate = dayjs(task.date_end);
+        const endDate = dayjs(task.data_end);
         const days = getDaysBetweenDates(startDate, endDate);
         days.forEach((date, index) => {
           const isStartDate = index === 0;
@@ -62,14 +80,11 @@ const MyCalendar = () => {
     const dateCellRender = (value) => {
         const date = dayjs(value).format('YYYY-MM-DD');
         const tasksForDate = taskEvents[date] || [];
-        if (tasksForDate.length){
-            console.log(value ,date,tasksForDate);
-        }
 
         return (
             <ul>
                 {tasksForDate.map(task => (
-                  <li key={task.id}> 
+                  <li key={task.id} onClick={()=>{showModal(task)}} > 
                      <Popover content={task.description} title="Title">
                       <Flex vertical>
                         <Typography.Text type="warning">{task.title}</Typography.Text>
@@ -84,7 +99,12 @@ const MyCalendar = () => {
         )
     }
     
-    return  <Calendar dateCellRender ={dateCellRender}/>;
+    return  <>
+    <Calendar dateCellRender ={dateCellRender}/>
+     <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+        <MyForm task={task} refetch={refetch}/>
+      </Modal>
+    </>;
 };
 
 export default MyCalendar;
