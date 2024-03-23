@@ -22,10 +22,6 @@ class GetAllTasksView(APIView):
 
 class CreateNewTaskView(APIView):
     def post(self, request):
-        #de = request.data.get("data_end")
-        
-        #print(de)
-        
         if(request.data.get("data_end") <= request.data.get("date_start")):
             return Response({"error":"Время начала не должно быть больше времени конца!"})
         serializer = OrganizerSerializer(data=request.data)
