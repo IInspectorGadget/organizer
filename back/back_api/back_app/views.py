@@ -54,3 +54,4 @@ class UpdateTaskView(APIView):
 class DeleteTask(generics.DestroyAPIView):
     lookup_field = "pk"
     queryset = Organizer.objects.all()
+    
