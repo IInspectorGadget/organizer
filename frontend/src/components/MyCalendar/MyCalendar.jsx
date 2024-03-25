@@ -1,21 +1,33 @@
-import { Calendar, Flex, Modal, Popover, Typography } from "antd";
-import axios from "axios";
+import { Button, Calendar, Flex, Modal, Popover, Typography } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
 import IsSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import MyForm from "../MyForm";
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { useGetDatesQuery, useUpdateEventMutation } from '@src/utils/api';
 dayjs.extend(IsSameOrBefore)
 dayjs.extend(isBetween)
 
 const MyCalendar = () => {
-    const currentDate = dayjs()
-    const startOfMonth = currentDate.startOf('month')
-    const endOfMonth = currentDate.endOf('month')
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [task, setTask] = useState(null);
+
+    const [currentDate, setCurrentDate] = useState(dayjs())
+    const startOfMonth = currentDate.startOf('month').subtract(1, 'month')
+    const endOfMonth = currentDate.endOf('month').add(1, 'month')
+
+    const { data, isLoading, isError } = useGetDatesQuery(
+        {
+          startOfMonth: startOfMonth.format('YYYY-MM-DD HH:mm'),
+          endOfMonth: endOfMonth.format('YYYY-MM-DD HH:mm')
+        }
+    );
+
+    const [updateEvent, { isLoadingUpdate, isErrorUpdate }] = useUpdateEventMutation();
+    
 
     const showModal = useCallback((task) => {
       setTask(task);
@@ -30,22 +42,7 @@ const MyCalendar = () => {
       setIsModalOpen(false);
     };
 
-
-    const getDates = useCallback(async () => {
-        try {
-          const response = await axios.get(`http://127.0.0.1:8000/api/taskslist/`, { params: {
-            date_start: startOfMonth.format('YYYY-MM-DD HH:mm:ss'),
-            data_end: endOfMonth.format('YYYY-MM-DD HH:mm:ss')
-          } });
-          return response.data;
-        } catch (err) {
-          console.error(err);
-        }
-      }, [endOfMonth, startOfMonth]);
-
-    const {data, refetch, isLoading,} = useQuery(["calendar", endOfMonth, startOfMonth], getDates, {
-        keepPreviousData: false,
-      });
+    
 
     const getDaysBetweenDates = (startDate, endDate) => {
         const days = [];
@@ -58,6 +55,9 @@ const MyCalendar = () => {
     };
   
     
+
+
+
     const taskEvents = !isLoading ? data.tasks.reduce((acc, task) => {
         const startDate = dayjs(task.date_start);
         const endDate = dayjs(task.data_end);
@@ -98,11 +98,30 @@ const MyCalendar = () => {
             </ul>
         )
     }
+
+    const handlePrevClick = () => {
+      setCurrentDate(prevDate => prevDate.clone().subtract(1, 'month'));
+    };
+  
+    const handleNextClick = () => {
+      setCurrentDate(prevDate => prevDate.clone().add(1, 'month'));
+    };
     
     return  <>
-    <Calendar dateCellRender ={dateCellRender}/>
-     <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        <MyForm task={task} refetch={refetch}/>
+    <Flex>
+      <LeftOutlined onClick={handlePrevClick} style={{fontSize: '24px'}}/>
+      <Calendar cellRender ={dateCellRender} value={currentDate}/>
+      <RightOutlined onClick={handleNextClick} style={{fontSize: '24px'}}/>
+    </Flex>
+     <Modal 
+      title="Basic Modal" 
+      open={isModalOpen} 
+      onOk={handleOk} 
+      onCancel={handleCancel} 
+      confirmLoading={isLoadingUpdate}
+      footer={<MyForm task={task} event={updateEvent} setIsModalOpen={setIsModalOpen}/>}
+     >
+        
       </Modal>
     </>;
 };
