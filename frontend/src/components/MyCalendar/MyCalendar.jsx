@@ -16,8 +16,8 @@ const MyCalendar = () => {
     const [task, setTask] = useState(null);
 
     const [currentDate, setCurrentDate] = useState(dayjs())
-    const startOfMonth = currentDate.startOf('month')
-    const endOfMonth = currentDate.endOf('month')
+    const startOfMonth = currentDate.startOf('month').subtract(1, 'month')
+    const endOfMonth = currentDate.endOf('month').add(1, 'month')
 
     const { data, isLoading, isError } = useGetDatesQuery(
         {
