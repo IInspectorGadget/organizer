@@ -38,6 +38,7 @@ class CreateNewTaskView(APIView):
 
 class UpdateTaskView(APIView):
     def put(self, request, *args, **kwargs):
+        print(request.data)
         pk = kwargs.get("pk", None)
         if(request.data.get("data_end") <= request.data.get("date_start")):
             return Response({"error":"Время начала не должно быть больше времени конца!"})
