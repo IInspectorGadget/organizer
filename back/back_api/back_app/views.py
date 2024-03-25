@@ -12,7 +12,6 @@ from .functions import ColisionsResolve
 
 class GetAllTasksView(APIView):
     def get(self, request):
-        
         if(request.data.get("date_start") == "all" or request.data.get("date_start") is None):
             lst = Organizer.objects.all()
             
@@ -38,7 +37,6 @@ class CreateNewTaskView(APIView):
 
 class UpdateTaskView(APIView):
     def put(self, request, *args, **kwargs):
-        print(request.data)
         pk = kwargs.get("pk", None)
         if(request.data.get("data_end") <= request.data.get("date_start")):
             return Response({"error":"Время начала не должно быть больше времени конца!"})

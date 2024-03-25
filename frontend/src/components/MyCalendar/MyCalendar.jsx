@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
 import IsSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import MyForm from "../MyForm";
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { useGetDatesQuery, useUpdateEventMutation } from '@src/utils/api';
 dayjs.extend(IsSameOrBefore)
 dayjs.extend(isBetween)
@@ -14,14 +15,14 @@ const MyCalendar = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [task, setTask] = useState(null);
 
-    const currentDate = dayjs()
+    const [currentDate, setCurrentDate] = useState(dayjs())
     const startOfMonth = currentDate.startOf('month')
     const endOfMonth = currentDate.endOf('month')
 
     const { data, isLoading, isError } = useGetDatesQuery(
         {
-          startOfMonth: startOfMonth.format('YYYY-MM-DD HH:mm:ss'),
-          endOfMonth: endOfMonth.format('YYYY-MM-DD HH:mm:ss')
+          startOfMonth: startOfMonth.format('YYYY-MM-DD HH:mm'),
+          endOfMonth: endOfMonth.format('YYYY-MM-DD HH:mm')
         }
     );
 
@@ -97,9 +98,21 @@ const MyCalendar = () => {
             </ul>
         )
     }
+
+    const handlePrevClick = () => {
+      setCurrentDate(prevDate => prevDate.clone().subtract(1, 'month'));
+    };
+  
+    const handleNextClick = () => {
+      setCurrentDate(prevDate => prevDate.clone().add(1, 'month'));
+    };
     
     return  <>
-    <Calendar cellRender ={dateCellRender}/>
+    <Flex>
+      <LeftOutlined onClick={handlePrevClick} style={{fontSize: '24px'}}/>
+      <Calendar cellRender ={dateCellRender} value={currentDate}/>
+      <RightOutlined onClick={handleNextClick} style={{fontSize: '24px'}}/>
+    </Flex>
      <Modal 
       title="Basic Modal" 
       open={isModalOpen} 
