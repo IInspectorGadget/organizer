@@ -4,7 +4,8 @@ from back_app.views import *
 urlpatterns = [
     path('taskslist/', GetAllTasksView.as_view()),
     path('createtask/', CreateNewTaskView.as_view()),
-    path('updatetask/<int:pk>/', UpdateTaskView.as_view())
+    path('updatetask/<int:pk>/', UpdateTaskView.as_view()),
+    path('deletetask/<int:pk>/', DeleteTask.as_view())
 
 
 ]
