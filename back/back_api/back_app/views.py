@@ -29,14 +29,19 @@ class CreateNewTaskView(APIView):
         
         if(request.data.get("data_end") <= request.data.get("date_start")):
             return Response({"error":"Время начала не должно быть больше времени конца!"})
-        qw = ColisionsResolve(request)
-        print(qw)
-        if len(qw) != 0:
-            return Response({"error":{"type":"collision", "data":qw}})
+        #Валидация данных
+        serializer = OrganizerSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        qw = ColisionsResolve(request, None)
+
         serializer = OrganizerSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        
+        #После сохранения задачи если есть колизии то отправляем их на фронт
+        if len(qw) != 0:
+            col = Organizer.objects.filter(id__in=qw).values('id', 'date_start', 'data_end', 'title', 'description')
+            return Response({"colisions":col})        
         return Response({"post":serializer.data})
 
 class UpdateTaskView(APIView):
@@ -50,13 +55,20 @@ class UpdateTaskView(APIView):
             instance = Organizer.objects.get(pk=pk)
         except:
             return Response({"error":"Объект не найден"})
+        #Валидация данных
+        serializer = OrganizerSerializer(data=request.data, instance=instance)
+        serializer.is_valid(raise_exception=True)
         
-        qw = ColisionsResolve(request)
-        if len(qw) != 0:
-            return Response({"error":{"type":"collision", "data":qw}})
+        qw = ColisionsResolve(request, pk)
+
         serializer = OrganizerSerializer(data=request.data, instance=instance)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+
+        #После сохранения задачи если есть колизии то отправляем их на фронт
+        if len(qw) != 0:
+            col = Organizer.objects.filter(id__in=qw).values('id', 'date_start', 'data_end', 'title', 'description')
+            return Response({"colisions":col})        
         return Response({"post":serializer.data})
 
 class DeleteTask(generics.DestroyAPIView):

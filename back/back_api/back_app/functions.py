@@ -10,8 +10,6 @@ def CheckColision(object_1, object_2):
     de1 = datetime.strptime(object_1['data_end'], "%Y-%m-%d %H:%M")
     ds2 = datetime.strptime(object_2.data['date_start'], "%Y-%m-%d %H:%M")
     de2 = datetime.strptime(object_2.data['data_end'], "%Y-%m-%d %H:%M")
-    print(object_1['date_start'])
-    print(object_2.data.get('date_start'))
     
     if object_2.data.get('date_start') >= object_1['date_start'] and object_2.data.get('data_end') <= object_1['data_end']:
         # return de2 - ds2 + de1 - de2
@@ -33,8 +31,13 @@ def CheckColision(object_1, object_2):
     
 
 
-def ColisionsResolve(request):
-    lst = OrganizerSerializer(Organizer.objects.all(), many=True).data
+def ColisionsResolve(request, pk):
+    #При изменении записи она не будет видеть саму себя(наверное)
+    if pk is None:
+      lst = OrganizerSerializer(Organizer.objects.all(), many=True).data
+    else:
+        lst = OrganizerSerializer(Organizer.objects.exclude(id = pk), many=True).data    
+    # lst = OrganizerSerializer(Organizer.objects.all(), many=True).data
     de = datetime.strptime(request.data.get('data_end'), "%Y-%m-%d %H:%M")
     ds = datetime.strptime(request.data.get('date_start'), "%Y-%m-%d %H:%M")
     qw = []
