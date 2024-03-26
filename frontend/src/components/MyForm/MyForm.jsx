@@ -35,6 +35,7 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
 
     const handlerFinish =  (values) => {
       try{
+        console.log(1)
         event({id: task?.id,date_start:dayjs(currentDate[0]).format('YYYY-MM-DD HH:mm'), data_end:dayjs(currentDate[1]).format('YYYY-MM-DD HH:mm'), title: values.title, description: values.description})
         setIsModalOpen && setIsModalOpen(false)
       }catch(error){
