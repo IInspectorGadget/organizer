@@ -114,7 +114,7 @@ const MyCalendar = () => {
       <RightOutlined onClick={handleNextClick} style={{fontSize: '24px'}}/>
     </Flex>
      <Modal 
-      title="Basic Modal" 
+      title="Изменение события" 
       open={isModalOpen} 
       onOk={handleOk} 
       onCancel={handleCancel} 
