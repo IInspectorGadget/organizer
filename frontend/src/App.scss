@@ -2,3 +2,39 @@
     padding: 0px;
     margin: 0px;
 }
+.ant-picker-calendar-mode-switch{
+    display: none
+}
+.ant-picker-calendar-header{
+    padding: 12px !important; 
+}
+
+.item:not(:first-child){
+    border-top: 1px solid black;
+}
+.item{
+    cursor: pointer;
+}
+.item:hover{
+    background-color: antiquewhite;
+}
+
+.myCalendar .ant-picker-cell-inner:hover{
+    background: unset !important;
+}
+
+.addButton{
+    position: absolute;
+    top: 0px;
+    
+    cursor: pointer;
+}
+.buttonIcon{
+    &:hover{
+        color: rgb(221, 175, 115);
+    }
+}
+.myCalendar .ant-picker-cell{
+    cursor: inherit !important;
+}
+

@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
 import IsSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import MyForm from "../MyForm";
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { LeftOutlined, PlusCircleOutlined, RightOutlined } from '@ant-design/icons';
 import { useGetDatesQuery, useUpdateEventMutation } from '@src/utils/api';
 dayjs.extend(IsSameOrBefore)
 dayjs.extend(isBetween)
@@ -13,6 +13,7 @@ dayjs.extend(isBetween)
 const MyCalendar = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isAdd, setIsAdd] = useState(false);
     const [task, setTask] = useState(null);
 
     const [currentDate, setCurrentDate] = useState(dayjs())
@@ -32,7 +33,14 @@ const MyCalendar = () => {
     const showModal = useCallback((task) => {
       setTask(task);
       setIsModalOpen(true);
-    },[setTask, setIsModalOpen]);
+      setIsAdd(false)
+    },[setTask, setIsModalOpen,setIsAdd]);
+
+    const showAddModal = useCallback((task) => {
+      setTask(task);
+      setIsModalOpen(true);
+      setIsAdd(true)
+    },[setTask, setIsModalOpen,setIsAdd]);
 
     const handleOk = () => {
       setIsModalOpen(false);
@@ -76,16 +84,17 @@ const MyCalendar = () => {
         return acc;
       }, {}) : [];
   
-
-    const dateCellRender = (value) => {
+      const dateCellRender = (value) => {
         const date = dayjs(value).format('YYYY-MM-DD');
         const tasksForDate = taskEvents[date] || [];
 
         return (
+          <>
+          <Popover content="Добавить запись"  ><div className="addButton" onClick={()=>showAddModal({date_start: value.format('YYYY-MM-DD')})}><PlusCircleOutlined className="buttonIcon"/></div></Popover>
             <ul>
                 {tasksForDate.map(task => (
-                  <li key={task.id} onClick={()=>{showModal(task)}} > 
-                     <Popover content={task.description} title="Title">
+                  <li className="item" key={task.id} onClick={()=>{showModal(task)}} > 
+                     <Popover content={task.description}>
                       <Flex vertical>
                         <Typography.Text type="warning">{task.title}</Typography.Text>
                         {task.startTime && <Typography.Text type="success">{task.startTime}</Typography.Text>}
@@ -96,6 +105,7 @@ const MyCalendar = () => {
                        </li>
                 ))}
             </ul>
+            </>
         )
     }
 
@@ -110,16 +120,16 @@ const MyCalendar = () => {
     return  <>
     <Flex>
       <LeftOutlined onClick={handlePrevClick} style={{fontSize: '24px'}}/>
-      <Calendar cellRender ={dateCellRender} value={currentDate}/>
+      <Calendar className="myCalendar" cellRender ={dateCellRender} value={currentDate} onChange={(date) => setCurrentDate(date)}/>
       <RightOutlined onClick={handleNextClick} style={{fontSize: '24px'}}/>
     </Flex>
      <Modal 
-      title="Изменение события" 
+      title="Форма"
       open={isModalOpen} 
       onOk={handleOk} 
       onCancel={handleCancel} 
       confirmLoading={isLoadingUpdate}
-      footer={<MyForm task={task} event={updateEvent} setIsModalOpen={setIsModalOpen}/>}
+      footer={<MyForm task={task} event={updateEvent} setIsModalOpen={setIsModalOpen} isAdd={isAdd}/>}
      >
         
       </Modal>
