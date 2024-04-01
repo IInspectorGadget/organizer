@@ -112,12 +112,12 @@ const MyCalendar = () => {
 
         return (
           <div>
-          <Popover content="Добавить запись"  ><div className="addButton" onClick={()=>showAddModal({date_start: value.format('YYYY-MM-DD')})}><PlusCircleOutlined className="buttonIcon"/></div></Popover>
-          <Popover content="Просмотреть все записи"  ><div className="detailButton" onClick={()=>showDetailView(date)}><UnorderedListOutlined  className="buttonIcon"/></div></Popover>
+          <Popover className="popover" content="Добавить запись"  ><div className="addButton" onClick={()=>showAddModal({date_start: value.format('YYYY-MM-DD')})}><PlusCircleOutlined className="buttonIcon"/></div></Popover>
+          <Popover className="popover" content="Просмотреть все записи"  ><div className="detailButton" onClick={()=>showDetailView(date)}><UnorderedListOutlined  className="buttonIcon"/></div></Popover>
             <ul>
                 {tasksForDate.map(task => (
                   <li className="item" key={task.id} onClick={()=>{showModal(task)}} > 
-                     <Popover content={task.description}>
+                     <Popover className="popover" content={task.description}>
                       <Flex vertical>
                         <Typography.Text type="warning">{task.title}</Typography.Text>
                         {task.startTime && <Typography.Text type="success">{task.startTime}</Typography.Text>}

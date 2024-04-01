@@ -23,6 +23,11 @@
     background: unset !important;
 }
 
+.myCalendar .ant-picker-calendar-date-content{
+    height: fit-content;
+}
+
+
 .addButton{
     position: absolute;
     top: 0px;
