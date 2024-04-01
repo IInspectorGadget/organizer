@@ -77,7 +77,7 @@ const MyCalendar = () => {
       setShowDate(date)
     }
     const taskOnCurrentDay = showDate ? data.tasks.reduce((acc, task) => {
-      const startDate = dayjs(task.date_start);
+      const startDate = dayjs(task.date_start).startOf('day');
       const endDate = dayjs(task.data_end);
       const isSameDay = isDateInRange(showDate, startDate, endDate);
       if(!acc[isSameDay]){
@@ -111,7 +111,7 @@ const MyCalendar = () => {
         const tasksForDate = taskEvents[date] || [];
 
         return (
-          <>
+          <div>
           <Popover content="Добавить запись"  ><div className="addButton" onClick={()=>showAddModal({date_start: value.format('YYYY-MM-DD')})}><PlusCircleOutlined className="buttonIcon"/></div></Popover>
           <Popover content="Просмотреть все записи"  ><div className="detailButton" onClick={()=>showDetailView(date)}><UnorderedListOutlined  className="buttonIcon"/></div></Popover>
             <ul>
@@ -128,7 +128,7 @@ const MyCalendar = () => {
                        </li>
                 ))}
             </ul>
-            </>
+            </div>
         )
     }
 
