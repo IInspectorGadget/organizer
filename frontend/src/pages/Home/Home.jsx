@@ -22,7 +22,7 @@ const Home = () => {
             {/* <Header></Header> */}
             <Content className='content'>
                 <Flex vertical>
-                    <MyForm event={createEvent} isLoading={isLoading}/>
+                    {/* <MyForm event={createEvent} isLoading={isLoading}/> */}
                     <MyCalendar/>
                 </Flex>
             </Content>
