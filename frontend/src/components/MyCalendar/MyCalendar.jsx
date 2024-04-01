@@ -62,6 +62,10 @@ const MyCalendar = () => {
         }
         return days;
     };
+    
+    const showDetailView = () => {
+
+    }
   
     
 
@@ -92,6 +96,7 @@ const MyCalendar = () => {
         return (
           <>
           <Popover content="Добавить запись"  ><div className="addButton" onClick={()=>showAddModal({date_start: value.format('YYYY-MM-DD')})}><PlusCircleOutlined className="buttonIcon"/></div></Popover>
+          {/* <Popover content="Просмотреть все записи"  ><div className="addButton" onClick={()=>showDetailView()}><PlusCircleOutlined className="buttonIcon"/></div></Popover> */}
             <ul>
                 {tasksForDate.map(task => (
                   <li className="item" key={task.id} onClick={()=>{showModal(task)}} > 

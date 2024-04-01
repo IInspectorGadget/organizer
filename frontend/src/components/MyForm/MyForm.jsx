@@ -46,7 +46,7 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
     const handlerFinish =  async (values) => {
       try{
         let response
-        print(isAdd)
+        console.log(isAdd)
         if (isAdd){
           response = await createEvent({id: task?.id,date_start:dateStart.format('YYYY-MM-DD HH:mm'), data_end:dateEnd.format('YYYY-MM-DD HH:mm'), title: values.title, description: values.description})
 
@@ -65,6 +65,7 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
         }
         console.log(response)
         setIsModalOpen && setIsModalOpen(false)
+        setColisions([])
 
       }catch(error){
         console.error('Ошибка при создании события:', error);
@@ -147,7 +148,7 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
         {task ? "Сохранить" : "Создать"}
       </Button>
     </Form.Item>
-    {task && <Form.Item>
+    {task && isAdd && <Form.Item>
       <Button type="primary" onClick={handlerDelete}>
         Удалить
       </Button>
