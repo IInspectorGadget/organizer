@@ -37,7 +37,7 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
         },
         {
           name: ['start_date'],
-          value: task ? dayjs(task.date_start) : null,
+          value: task ? dayjs(task.date_start) : "",
         },
         {
           name: ['end_date'],
@@ -45,7 +45,7 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
         },
   
       ])
-  },[task, isAdd, dateStart, dateEnd])
+  },[task, isAdd])
 
     const handlerFinish =  async (values) => {
       try{
@@ -115,14 +115,24 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
       <Form.Item label="Дата начала"
         name="start_date"
         rules={[{ required: true, message: 'Обязательное поле' }, {validator: datesValidator}]}
-        initialValue={dateStart}>
-       <DatePicker onChange={(date) => setDateStart(date)} showTime needConfirm={false} format="YYYY-MM-DD HH:mm" />
+        >
+       <DatePicker onChange={(date) => {
+        setDateStart(date)
+        setFields(prev => {
+          return [prev[0],prev[1],{...prev[2], value: date}, prev[3]]
+        })
+       }} showTime needConfirm={false} format="YYYY-MM-DD HH:mm" />
       </Form.Item>
       <Form.Item label="Дата конца"
         name="end_date"
         rules={[{ required: true, message: 'Обязательное поле'}, {validator: datesValidator} ]}
-        initialValue={dateEnd}>
-       <DatePicker onChange={(date) => setDateEnd(date)} showTime needConfirm={false} format="YYYY-MM-DD HH:mm" />
+        >
+       <DatePicker onChange={(date) => {
+        setDateEnd(date)
+        setFields(prev => {
+          return [prev[0],prev[1],prev[2],{...prev[3], value: date}]
+        })
+        }} showTime needConfirm={false} format="YYYY-MM-DD HH:mm" />
       </Form.Item>
     {error?.length !== 0  &&  <Typography.Text type="danger">{error}</Typography.Text>}
     {colisions?.length !== 0 && <Form.Item>
