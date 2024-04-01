@@ -46,6 +46,7 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
     const handlerFinish =  async (values) => {
       try{
         let response
+        print(isAdd)
         if (isAdd){
           response = await createEvent({id: task?.id,date_start:dateStart.format('YYYY-MM-DD HH:mm'), data_end:dateEnd.format('YYYY-MM-DD HH:mm'), title: values.title, description: values.description})
 
@@ -119,8 +120,8 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
         initialValue={dateEnd}>
        <DatePicker onChange={(date) => setDateEnd(date)} showTime needConfirm={false} format="YYYY-MM-DD HH:mm" />
       </Form.Item>
-    {error.length !== 0  &&  <Typography.Text type="danger">{error}</Typography.Text>}
-    {colisions.length !== 0 && <Form.Item>
+    {error?.length !== 0  &&  <Typography.Text type="danger">{error}</Typography.Text>}
+    {colisions?.length !== 0 && <Form.Item>
         <p>Пересечения</p>
         {colisions.map(el => <li key={el.id} className='collisionItem'>
           <div className='collisionItemContainer'>
