@@ -81,6 +81,7 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
 
     const handlerDelete = () =>{
       deleteEvent(task.id)
+      setIsModalOpen(false)
     }
 
     const datesValidator = (rule, value, callback) => {

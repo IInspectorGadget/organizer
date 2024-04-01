@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
 import IsSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import MyForm from "../MyForm";
-import { LeftOutlined, PlusCircleOutlined, RightOutlined } from '@ant-design/icons';
+import { LeftOutlined, PlusCircleOutlined, RightOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import { useCreateEventMutation, useGetDatesQuery, useUpdateEventMutation } from '@src/utils/api';
 dayjs.extend(IsSameOrBefore)
 dayjs.extend(isBetween)
@@ -17,6 +17,8 @@ const MyCalendar = () => {
     const [task, setTask] = useState(null);
 
     const [currentDate, setCurrentDate] = useState(dayjs())
+    const [showDate, setShowDate] = useState(false);
+
     const startOfMonth = currentDate.startOf('month').subtract(1, 'month')
     const endOfMonth = currentDate.endOf('month').add(1, 'month')
 
@@ -45,10 +47,12 @@ const MyCalendar = () => {
 
     const handleOk = () => {
       setIsModalOpen(false);
+      setShowDate(false)
     };
 
     const handleCancel = () => {
       setIsModalOpen(false);
+      setShowDate(false)
     };
 
     
@@ -62,14 +66,25 @@ const MyCalendar = () => {
         }
         return days;
     };
-    
-    const showDetailView = () => {
 
+    const isDateInRange = (date, startDate, endDate) => {
+      return dayjs(date).isBetween(startDate, endDate, null, '[]');
+  }
+    
+    const showDetailView = (date) => {
+      setShowDate(date)
     }
-  
-    
-
-
+    const taskOnCurrentDay = showDate ? data.tasks.reduce((acc, task) => {
+      const startDate = dayjs(task.date_start);
+      const endDate = dayjs(task.data_end);
+      const isSameDay = isDateInRange(showDate, startDate, endDate);
+      if(!acc[isSameDay]){
+        acc[isSameDay] = []
+      }
+      acc[isSameDay].push(task)
+      return acc
+     
+    }, {}) : [];
 
     const taskEvents = !isLoading ? data.tasks.reduce((acc, task) => {
         const startDate = dayjs(task.date_start);
@@ -96,7 +111,7 @@ const MyCalendar = () => {
         return (
           <>
           <Popover content="Добавить запись"  ><div className="addButton" onClick={()=>showAddModal({date_start: value.format('YYYY-MM-DD')})}><PlusCircleOutlined className="buttonIcon"/></div></Popover>
-          {/* <Popover content="Просмотреть все записи"  ><div className="addButton" onClick={()=>showDetailView()}><PlusCircleOutlined className="buttonIcon"/></div></Popover> */}
+          <Popover content="Просмотреть все записи"  ><div className="detailButton" onClick={()=>showDetailView(date)}><UnorderedListOutlined  className="buttonIcon"/></div></Popover>
             <ul>
                 {tasksForDate.map(task => (
                   <li className="item" key={task.id} onClick={()=>{showModal(task)}} > 
@@ -136,9 +151,35 @@ const MyCalendar = () => {
       onCancel={handleCancel} 
       confirmLoading={isLoadingUpdate}
       footer={<MyForm task={task} event={updateEvent} createEvent={createEvent} setIsModalOpen={setIsModalOpen} isAdd={isAdd}/>}
+     />
+
+    <Modal 
+      title={showDate}
+      open={showDate} 
+      onOk={handleOk} 
+      onCancel={handleCancel} 
      >
+      {taskOnCurrentDay?.true?.map(el=> <li key={el.id} className="item" >
+          <div className='collisionItemContainer'>
+            <p>Название</p>
+            <p>{el.title}</p>
+          </div>
+          <div className='collisionItemContainer'>
+            <p>Описание</p>
+            <p>{el.description}</p>
+          </div>
+          <div className='collisionItemContainer'>
+            <p>Время начала</p>
+            <p>{dayjs(el.date_start).format('YYYY-MM-DD HH:mm')}</p>
+          </div>
+          <div className='collisionItemContainer'>
+            <p>Время конца</p>
+            <p>{dayjs(el.data_end).format('YYYY-MM-DD HH:mm')}</p>
+          </div>
+        </li>)}
+     </Modal>
+      
         
-      </Modal>
     </>;
 };
 
