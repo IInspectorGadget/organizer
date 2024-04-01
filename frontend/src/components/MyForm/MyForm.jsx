@@ -14,7 +14,6 @@ import { useDeleteEventMutation } from '@src/utils/api';
 
 const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = null, createEvent, isAdd}) => {
   const [deleteEvent, { isDelete, isDeleteErrors }] = useDeleteEventMutation();
-  console.log(task)
   const [dateStart, setDateStart] = useState(task? dayjs(task.date_start) : null)
   const [dateEnd, setDateEnd] = useState(task? dayjs(task.date_start) : null)
   const [fields, setFields] = useState(null);
@@ -24,11 +23,10 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
 
   useEffect(()=>{
     setDateStart(task? dayjs(task.date_start) : null)
-    setDateEnd(task? dayjs(task.date_start) : null)
+    setDateEnd(task? dayjs(task.data_end) : null)
   },[task])
 
   useEffect(()=>{
-    console.log(dateStart,"dateStart")
       setFields([
         {
           name: ['title'],
@@ -48,7 +46,7 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
         },
   
       ])
-  },[task, isAdd, dateStart])
+  },[task, isAdd, dateStart, dateEnd])
 
     const handlerFinish =  async (values) => {
       try{
@@ -70,7 +68,6 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
           setError(response.data.error)
           return
         }
-        console.log(response)
         setIsModalOpen && setIsModalOpen(false)
         setColisions([])
 
@@ -135,15 +132,15 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
         {colisions.map(el => <li key={el.id} className='collisionItem'>
           <div className='collisionItemContainer'>
             <p>Название</p>
-            <p>{el.title}</p>
+            <p className='secondItem'>{el.title}</p>
           </div>
           <div className='collisionItemContainer'>
             <p>Время начала</p>
-            <p>{dayjs(el.date_start).format('YYYY-MM-DD HH:mm')}</p>
+            <p className='secondItem'>{dayjs(el.date_start).format('YYYY-MM-DD HH:mm')}</p>
           </div>
           <div className='collisionItemContainer'>
             <p>Время конца</p>
-            <p>{dayjs(el.data_end).format('YYYY-MM-DD HH:mm')}</p>
+            <p className='secondItem'>{dayjs(el.data_end).format('YYYY-MM-DD HH:mm')}</p>
           </div>
         </li>
           

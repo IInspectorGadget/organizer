@@ -153,31 +153,33 @@ const MyCalendar = () => {
       footer={<MyForm task={task} event={updateEvent} createEvent={createEvent} setIsModalOpen={setIsModalOpen} isAdd={isAdd}/>}
      />
 
-    <Modal 
+    {!isModalOpen && <Modal 
       title={showDate}
       open={showDate} 
       onOk={handleOk} 
       onCancel={handleCancel} 
+      className="detailModal"
      >
-      {taskOnCurrentDay?.true?.map(el=> <li key={el.id} className="item" >
+      {taskOnCurrentDay?.true?.map(el=> <Popover key={el.id} content={"Редактировать"}><li onClick={()=>{showModal(el)}} className="item" >
           <div className='collisionItemContainer'>
             <p>Название</p>
-            <p>{el.title}</p>
+            <p className='secondItem'>{el.title}</p>
           </div>
           <div className='collisionItemContainer'>
             <p>Описание</p>
-            <p>{el.description}</p>
+            <p className='secondItem'>{el.description}</p>
           </div>
           <div className='collisionItemContainer'>
             <p>Время начала</p>
-            <p>{dayjs(el.date_start).format('YYYY-MM-DD HH:mm')}</p>
+            <p className='secondItem'>{dayjs(el.date_start).format('YYYY-MM-DD HH:mm')}</p>
           </div>
           <div className='collisionItemContainer'>
             <p>Время конца</p>
-            <p>{dayjs(el.data_end).format('YYYY-MM-DD HH:mm')}</p>
+            <p className='secondItem'>{dayjs(el.data_end).format('YYYY-MM-DD HH:mm')}</p>
           </div>
-        </li>)}
-     </Modal>
+        
+        </li></Popover>)}
+     </Modal>}
       
         
     </>;
