@@ -101,7 +101,10 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
       name="title"
       rules={[{ required: true, message: 'Обязательное поле' }, {max:120, message:"не может содержать больше 120 символов"}]}
     >
-        <Input/>
+        <Input onChange={(e) => setFields(prev => {
+          console.log(e.currentTarget.value)
+          return [{...prev[1], value: e.currentTarget.value}, prev[1],prev[2], prev[3]]
+        })}/>
     </Form.Item>
 
     <Form.Item
@@ -109,7 +112,10 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
       name="description"
       rules={[{ required: true, message: 'Обязательное поле' }]}
     >
-        <TextArea/>
+        <TextArea onChange={(e) => setFields(prev => {
+          console.log(e.currentTarget.value)
+          return [prev[0],{...prev[1], value: e.currentTarget.value},prev[2], prev[3]]
+        })}/>
     </Form.Item>
 
       <Form.Item label="Дата начала"

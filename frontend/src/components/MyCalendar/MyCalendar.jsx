@@ -76,7 +76,7 @@ const MyCalendar = () => {
     const showDetailView = (date) => {
       setShowDate(date)
     }
-    const taskOnCurrentDay = showDate ? data.tasks.reduce((acc, task) => {
+    const taskOnCurrentDay = showDate && !isLoading ? data.tasks.reduce((acc, task) => {
       const startDate = dayjs(task.date_start).startOf('day');
       const endDate = dayjs(task.data_end);
       const isSameDay = isDateInRange(showDate, startDate, endDate);
@@ -88,7 +88,7 @@ const MyCalendar = () => {
      
     }, {}) : [];
 
-    const taskEvents = !isLoading ? data.tasks.reduce((acc, task) => {
+    const taskEvents = !isLoading && data?.tasks ? data.tasks.reduce((acc, task) => {
         const startDate = dayjs(task.date_start);
         const endDate = dayjs(task.data_end);
         const days = getDaysBetweenDates(startDate, endDate);
