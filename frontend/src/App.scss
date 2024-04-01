@@ -37,4 +37,14 @@
 .myCalendar .ant-picker-cell{
     cursor: inherit !important;
 }
+.collisionItem{
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 5px;
+    text-align: left;
+}
 
+.collisionItemContainer{
+    display: flex;
+    justify-content: space-between;
+}

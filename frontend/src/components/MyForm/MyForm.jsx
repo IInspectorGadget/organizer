@@ -3,6 +3,7 @@ import {
     DatePicker,
     Form,
     Input,
+    Typography,
   } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 const { RangePicker } = DatePicker;
@@ -11,12 +12,15 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
 import { useDeleteEventMutation } from '@src/utils/api';
 
-const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = null, isAdd}) => {
+const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = null, createEvent, isAdd}) => {
   const [deleteEvent, { isDelete, isDeleteErrors }] = useDeleteEventMutation();
   console.log(task)
   const [dateStart, setDateStart] = useState(task? dayjs(task.date_start) : null)
   const [dateEnd, setDateEnd] = useState(task? dayjs(task.date_start) : null)
   const [fields, setFields] = useState(null);
+
+  const [colisions, setColisions] = useState([]);
+  const [error, setError] = useState();
   useEffect(()=>{
       setFields([
         {
@@ -39,10 +43,28 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
       ])
   },[task, isAdd])
 
-    const handlerFinish =  (values) => {
+    const handlerFinish =  async (values) => {
       try{
-        event({id: task?.id,date_start:dateStart.format('YYYY-MM-DD HH:mm'), data_end:dateEnd.format('YYYY-MM-DD HH:mm'), title: values.title, description: values.description})
+        let response
+        if (isAdd){
+          response = await createEvent({id: task?.id,date_start:dateStart.format('YYYY-MM-DD HH:mm'), data_end:dateEnd.format('YYYY-MM-DD HH:mm'), title: values.title, description: values.description})
+
+        } else {
+          response = await event({id: task?.id,date_start:dateStart.format('YYYY-MM-DD HH:mm'), data_end:dateEnd.format('YYYY-MM-DD HH:mm'), title: values.title, description: values.description})
+
+        }
+        if(response.data.colisions){
+          setColisions(response.data.colisions)
+          return 
+        } 
+
+        if(response.data.error){
+          setError(response.data.error)
+          return
+        }
+        console.log(response)
         setIsModalOpen && setIsModalOpen(false)
+
       }catch(error){
         console.error('Ошибка при создании события:', error);
       }
@@ -97,7 +119,27 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
         initialValue={dateEnd}>
        <DatePicker onChange={(date) => setDateEnd(date)} showTime needConfirm={false} format="YYYY-MM-DD HH:mm" />
       </Form.Item>
-        
+    {error.length !== 0  &&  <Typography.Text type="danger">{error}</Typography.Text>}
+    {colisions.length !== 0 && <Form.Item>
+        <p>Пересечения</p>
+        {colisions.map(el => <li key={el.id} className='collisionItem'>
+          <div className='collisionItemContainer'>
+            <p>Название</p>
+            <p>{el.title}</p>
+          </div>
+          <div className='collisionItemContainer'>
+            <p>Время начала</p>
+            <p>{dayjs(el.date_start).format('YYYY-MM-DD HH:mm')}</p>
+          </div>
+          <div className='collisionItemContainer'>
+            <p>Время конца</p>
+            <p>{dayjs(el.data_end).format('YYYY-MM-DD HH:mm')}</p>
+          </div>
+        </li>
+          
+          )}
+          <Typography.Text type="danger">Избавьтесь от пересечений </Typography.Text>
+      </Form.Item>}
 
     <Form.Item>
       <Button type="primary" htmlType="submit">

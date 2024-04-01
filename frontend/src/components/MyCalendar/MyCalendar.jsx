@@ -6,7 +6,7 @@ import isBetween from 'dayjs/plugin/isBetween'
 import IsSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import MyForm from "../MyForm";
 import { LeftOutlined, PlusCircleOutlined, RightOutlined } from '@ant-design/icons';
-import { useGetDatesQuery, useUpdateEventMutation } from '@src/utils/api';
+import { useCreateEventMutation, useGetDatesQuery, useUpdateEventMutation } from '@src/utils/api';
 dayjs.extend(IsSameOrBefore)
 dayjs.extend(isBetween)
 
@@ -28,6 +28,7 @@ const MyCalendar = () => {
     );
 
     const [updateEvent, { isLoadingUpdate, isErrorUpdate }] = useUpdateEventMutation();
+    const [createEvent, { isLoadingCreate, isErrorCreate }] = useCreateEventMutation();
     
 
     const showModal = useCallback((task) => {
@@ -129,7 +130,7 @@ const MyCalendar = () => {
       onOk={handleOk} 
       onCancel={handleCancel} 
       confirmLoading={isLoadingUpdate}
-      footer={<MyForm task={task} event={updateEvent} setIsModalOpen={setIsModalOpen} isAdd={isAdd}/>}
+      footer={<MyForm task={task} event={updateEvent} createEvent={createEvent} setIsModalOpen={setIsModalOpen} isAdd={isAdd}/>}
      >
         
       </Modal>
