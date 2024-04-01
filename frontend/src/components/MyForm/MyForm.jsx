@@ -22,6 +22,7 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
   const [colisions, setColisions] = useState([]);
   const [error, setError] = useState();
   useEffect(()=>{
+    console.log(dateStart)
       setFields([
         {
           name: ['title'],
@@ -41,7 +42,7 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
         },
   
       ])
-  },[task, isAdd])
+  },[task, isAdd, dateStart])
 
     const handlerFinish =  async (values) => {
       try{
@@ -148,7 +149,7 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
         {task ? "Сохранить" : "Создать"}
       </Button>
     </Form.Item>
-    {task && isAdd && <Form.Item>
+    {task && !isAdd && <Form.Item>
       <Button type="primary" onClick={handlerDelete}>
         Удалить
       </Button>
