@@ -12,13 +12,12 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
 import { useDeleteEventMutation } from '@src/utils/api';
 
-const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = null, createEvent, isAdd}) => {
+const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = null, createEvent, isAdd, colisions, setColisions}) => {
   const [deleteEvent, { isDelete, isDeleteErrors }] = useDeleteEventMutation();
   const [dateStart, setDateStart] = useState(task? dayjs(task.date_start) : null)
   const [dateEnd, setDateEnd] = useState(task? dayjs(task.date_start) : null)
   const [fields, setFields] = useState(null);
 
-  const [colisions, setColisions] = useState([]);
   const [error, setError] = useState();
 
   useEffect(()=>{
@@ -51,7 +50,6 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
     const handlerFinish =  async (values) => {
       try{
         let response
-        console.log(isAdd)
         if (isAdd){
           response = await createEvent({id: task?.id,date_start:dateStart.format('YYYY-MM-DD HH:mm'), data_end:dateEnd.format('YYYY-MM-DD HH:mm'), title: values.title, description: values.description})
 

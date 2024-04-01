@@ -28,6 +28,7 @@ const MyCalendar = () => {
           endOfMonth: endOfMonth.format('YYYY-MM-DD HH:mm')
         }
     );
+    const [colisions, setColisions] = useState([]);
 
     const [updateEvent, { isLoadingUpdate, isErrorUpdate }] = useUpdateEventMutation();
     const [createEvent, { isLoadingCreate, isErrorCreate }] = useCreateEventMutation();
@@ -53,6 +54,7 @@ const MyCalendar = () => {
     const handleCancel = () => {
       setIsModalOpen(false);
       setShowDate(false)
+      setColisions([])
     };
 
     
@@ -150,7 +152,7 @@ const MyCalendar = () => {
       onOk={handleOk} 
       onCancel={handleCancel} 
       confirmLoading={isLoadingUpdate}
-      footer={<MyForm task={task} event={updateEvent} createEvent={createEvent} setIsModalOpen={setIsModalOpen} isAdd={isAdd}/>}
+      footer={<MyForm colisions={colisions} setColisions={setColisions} task={task} event={updateEvent} createEvent={createEvent} setIsModalOpen={setIsModalOpen} isAdd={isAdd}/>}
      />
 
     {!isModalOpen && <Modal 
