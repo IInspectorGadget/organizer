@@ -21,8 +21,14 @@ const MyForm = ({task = null, isLoading = false, event = null, setIsModalOpen = 
 
   const [colisions, setColisions] = useState([]);
   const [error, setError] = useState();
+
   useEffect(()=>{
-    console.log(dateStart)
+    setDateStart(task? dayjs(task.date_start) : null)
+    setDateEnd(task? dayjs(task.date_start) : null)
+  },[task])
+
+  useEffect(()=>{
+    console.log(dateStart,"dateStart")
       setFields([
         {
           name: ['title'],
